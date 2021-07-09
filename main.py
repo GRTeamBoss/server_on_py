@@ -343,8 +343,8 @@ from django.shortcuts import render
         Server.system(f'python manage.py startapp {name}')
 
 
-    def migrate():
-        Server.system(f'python manage.py migrate')
+    def migrate(parent_folder):
+        Server.system(f'cd {parent_folder}; python manage.py migrate')
 
 
     def run(port = 8000):
@@ -375,5 +375,31 @@ from django.shortcuts import render
                 Server.system(f'echo {content} > {name}')
 
 
-    def edit():
-        pass
+    def edit(parent_folder = 'default', project = 'default', app = ['widget',]):
+        PROJECT_LINKS = ['asgi.py', 'settings.py', 'urls.py', 'wsgi.py']
+        APP_LINKS = ['admin.py', 'apps.py', 'models.py', 'tests.py', 'views.py']
+        for i in PROJECT_LINKS:
+            with open(f'./{parent_folder}/{project}/{i}', 'w+', encoding='utf-8') as file:
+                read = file.read().split('\n')
+                if i == 'asgi.py':
+                    pass
+                if i == 'settings.py':
+                    pass
+                if i == 'urls.py':
+                    pass
+                if i == 'wsgi.py':
+                    pass
+        for i in app:
+            for n in APP_LINKS:
+                with open(f'./{parent_folder}/{i}/{n}', 'w+', encoding='utf-8') as file:
+                    read = file.read().split('\n')
+                    if n == 'admin.py':
+                        pass
+                    if n == 'apps.py':
+                        pass
+                    if n == 'models.py':
+                        pass
+                    if n == 'tests.py':
+                        pass
+                    if n == 'views.py':
+                        pass
