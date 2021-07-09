@@ -2,7 +2,7 @@
 #-*- encoding: utf-8 -*-
 
 # frameworks and libraries
-import os
+import os, platform
 
 
 class Server:
@@ -294,19 +294,31 @@ from django.shortcuts import render
 
     def get(path):
         with open(f'{path}', 'r', encoding='utf-8') as file:
-            read = file.read()
+            read = file.read().split('\n')
+            read = [f'{val}: {read[val]}' for val in range(0, len(read))]
+            read = '\n'.join(read)
         return read
 
 
-    def set(path, content = ''):
-        with open(f'{path}', 'w', encoding='utf-8') as file:
-            file.write(f'{content}')
+    def set(path, number,  content = ''):
+        with open(f'{path}', 'w+', encoding='utf-8') as file:
+            read = file.read().split('\n')
+            for val in range(0, len(read)):
+                if val == number:
+                    read[val] = content
+            read = '\n'.join(read)
+            file.write(read)
         return 0
 
 
-    def add(path, content = ''):
+    def add(path, number, content = ''):
         with open(f'{path}', 'a', encoding='utf-8') as file:
-            file.write(f'{content}')
+            read = file.read().split('\n')
+            for val in range(0, len(read)):
+                if val == number:
+                    read[val] += content
+            read = '\n'.join(read)
+            file.write(read)
         return 0
     
     def install(method, arg):
@@ -320,6 +332,7 @@ from django.shortcuts import render
             Server.system(f'pip install {arg}')
         if method == 2:
             Server.system(f'{arg}')
+        return 0
 
 
     def start(arg = 'mysite'):
@@ -342,21 +355,25 @@ from django.shortcuts import render
         """
         1 method:
         create folder:
-        create(1, foldername)
+        create(folder*, foldername)
         2 method:
         create file:
-        create(2, filename, content)
-        3 method:
-        write own bash if you use *Unix or MacOS:
-        create(3, '', sudo touch filename)
+        create(file*, filename.txt, content)
+        -----
+        method is required
         """
-        if method == 1:
-            Server.system(f'mkdir {name}')
-        if method == 2:
-            Server.system(f'echo {content} > {name}')
-        if method == 3:
-            Server.system(f'{content}')
+        osName = platform.system()
+        if osName == 'Linux' or osName == 'Darwin':
+            if method == 'folder':
+                Server.system(f'mkdir {name}')
+            if method == 'file':
+                Server.system(f'echo {content} > {name}')
+        if osName == 'Windows':
+            if method == 'folder':
+                Server.system(f'mkdir {name}')
+            if method == 'file':
+                Server.system(f'echo {content} > {name}')
 
 
-    def reload():
-        Server.system(f'dir')
+    def edit():
+        pass
